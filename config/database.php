@@ -3,17 +3,10 @@ declare(strict_types=1);
 
 // Sesuaikan jika username/password MySQL lokal kamu berbeda.
 define('DB_HOST', '127.0.0.1');
-<<<<<<< HEAD
-define('DB_NAME', 'cafeyu');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('BASE_URL', '/cafeyu'); // folder proyek di htdocs; ubah jika nama folder berbeda
-=======
 define('DB_NAME', 'kopiah');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('BASE_URL', '/kopiah'); // folder proyek di htdocs; ubah jika nama folder berbeda
->>>>>>> 0119df2 (ubah nama website)
 
 date_default_timezone_set('Asia/Jakarta');
 

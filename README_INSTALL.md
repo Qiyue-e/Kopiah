@@ -1,25 +1,13 @@
-<<<<<<< HEAD
-# Cafeyu — Coffee Shop PHP + MySQL
-=======
 # Kopiah — Coffee Shop PHP + MySQL
->>>>>>> 0119df2 (ubah nama website)
 
 **Tagline:** Ngopi santai, momen jadi berarti  
 **Teknologi:** PHP 8+ native, PDO, MySQL/MariaDB, Tailwind CSS CDN, JavaScript vanilla, Chart.js, MediaDevices API.
 
-<<<<<<< HEAD
-Cafeyu dibuat sebagai starter project fungsional untuk demonstrasi dan pengembangan lokal. Pelanggan dapat memesan tanpa akun; owner dan kasir memakai login staf terpisah. Tailwind, Chart.js, Google Fonts, QRCode.js, dan foto contoh memerlukan koneksi internet saat browser memuatnya.
-
-## 1. Isi fitur
-
-- Halaman pelanggan: beranda, menu dengan pencarian/filter, detail dan opsi menu, keranjang sesi, checkout tanpa login, promo, lacak status AJAX setiap 5 detik, review setelah pesanan selesai, Cafeyu Moments, kamera langsung, tentang kami, peta, dan WhatsApp.
-=======
 Kopiah dibuat sebagai starter project fungsional untuk demonstrasi dan pengembangan lokal. Pelanggan dapat memesan tanpa akun; owner dan kasir memakai login staf terpisah. Tailwind, Chart.js, Google Fonts, QRCode.js, dan foto contoh memerlukan koneksi internet saat browser memuatnya.
 
 ## 1. Isi fitur
 
 - Halaman pelanggan: beranda, menu dengan pencarian/filter, detail dan opsi menu, keranjang sesi, checkout tanpa login, promo, lacak status AJAX setiap 5 detik, review setelah pesanan selesai, Kopiah Moments, kamera langsung, tentang kami, peta, dan WhatsApp.
->>>>>>> 0119df2 (ubah nama website)
 - Kamera: depan/belakang, preview, jepret/ulangi/kirim, filter normal/hangat/monokrom, watermark waktu, token sesi sekali pakai, pemeriksaan MIME dengan `finfo`, batas data 2 MB, resize sisi terpanjang hingga 1600 px, pembatasan 5 foto per IP dan sesi per jam, serta moderasi sebelum foto dipublikasikan. Halaman kamera tidak memiliki input file atau pemilih galeri.
 - Kasir: dashboard dan polling pesanan, suara notifikasi setelah diaktifkan pengguna, ubah status pesanan, konfirmasi pembayaran, POS, preview/cetak struk thermal, toggle ketersediaan menu, moderasi foto, dan buka/tutup sesi kas.
 - Owner: dashboard dan grafik, CRUD menu/kategori/akun kasir/promo/meja, QR meja yang bisa dicetak/simpan PDF dari dialog print, laporan dengan filter, export CSV yang bisa dibuka di Excel, cetak laporan ke PDF melalui dialog print browser, moderasi foto/review, pengaturan identitas, dan log aktivitas.
@@ -28,36 +16,20 @@ Kopiah dibuat sebagai starter project fungsional untuk demonstrasi dan pengemban
 ## 2. Instalasi XAMPP (Windows)
 
 1. Pasang XAMPP yang menyertakan PHP 8.x dan MariaDB/MySQL.
-<<<<<<< HEAD
-2. Ekstrak folder proyek `cafeyu` ke `C:\xampp\htdocs\cafeyu`. Pastikan `index.php` ada langsung di dalam folder `cafeyu`, bukan di folder bertingkat seperti `cafeyu/cafeyu/index.php`.
-3. Buka **XAMPP Control Panel**, lalu klik **Start** pada **Apache** dan **MySQL**.
-   - Jika MySQL XAMPP gagal menyala karena port 3306 dipakai layanan Windows `MySQL80`, buka `services.msc`, hentikan layanan `MySQL80` sementara, lalu start MySQL XAMPP lagi. Jangan hapus data layanan lain.
-4. Buka `http://localhost/phpmyadmin` di browser.
-5. Pilih tab **Import**, klik **Choose File**, pilih `C:\xampp\htdocs\cafeyu\database\cafeyu.sql`, lalu klik **Import/Go**. File SQL membuat database `cafeyu`, tabel, akun demo, kategori, menu, pilihan menu, promo, dan 10 meja.
-   - File yang sama juga tersedia di root sebagai `cafeyu.sql`.
-=======
 2. Ekstrak folder proyek `kopiah` ke `C:\xampp\htdocs\kopiah`. Pastikan `index.php` ada langsung di dalam folder `kopiah`, bukan di folder bertingkat seperti `kopiah/kopiah/index.php`.
 3. Buka **XAMPP Control Panel**, lalu klik **Start** pada **Apache** dan **MySQL**.
    - Jika MySQL XAMPP gagal menyala karena port 3306 dipakai layanan Windows `MySQL80`, buka `services.msc`, hentikan layanan `MySQL80` sementara, lalu start MySQL XAMPP lagi. Jangan hapus data layanan lain.
 4. Buka `http://localhost/phpmyadmin` di browser.
 5. Pilih tab **Import**, klik **Choose File**, pilih `C:\xampp\htdocs\kopiah\database\kopiah.sql`, lalu klik **Import/Go**. File SQL membuat database `kopiah`, tabel, akun demo, kategori, menu, pilihan menu, promo, dan 10 meja.
    - File yang sama juga tersedia di root sebagai `kopiah.sql`.
->>>>>>> 0119df2 (ubah nama website)
 6. Buka `config/database.php` dan pastikan pengaturannya sesuai instalasi:
 
    ```php
    define('DB_HOST', '127.0.0.1');
-<<<<<<< HEAD
-   define('DB_NAME', 'cafeyu');
-   define('DB_USER', 'root');
-   define('DB_PASS', '');
-   define('BASE_URL', '/cafeyu');
-=======
    define('DB_NAME', 'kopiah');
    define('DB_USER', 'root');
    define('DB_PASS', '');
    define('BASE_URL', '/kopiah');
->>>>>>> 0119df2 (ubah nama website)
    ```
 
    Untuk konfigurasi XAMPP default, username biasanya `root` dan password kosong. Jika kamu sudah memberi password pada MySQL, isi `DB_PASS` dengan password tersebut.
@@ -72,12 +44,6 @@ Kopiah dibuat sebagai starter project fungsional untuk demonstrasi dan pengemban
 
    - `pdo_mysql`: koneksi database PDO.
    - `fileinfo`: validasi MIME foto.
-<<<<<<< HEAD
-   - `gd`: resize dan simpan foto Cafeyu Moments.
-   - `mbstring`: dukungan teks UTF-8; kode memiliki fallback sederhana untuk sebagian fungsi string jika ekstensi ini tidak tersedia.
-8. Buka website: **http://localhost/cafeyu/**.
-9. Buka login staf: **http://localhost/cafeyu/admin/login.php**.
-=======
    - `gd`: resize dan simpan foto Kopiah Moments.
    - `mbstring`: dukungan teks UTF-8; kode memiliki fallback sederhana untuk sebagian fungsi string jika ekstensi ini tidak tersedia.
 8. Buka website: **http://localhost/kopiah/**.
@@ -94,17 +60,12 @@ Jangan import `database/kopiah.sql` ke database lama jika ingin mempertahankan r
 5. Buka `http://localhost/kopiah/`. Password akun lama tetap sama. Untuk logo, file `assets/img/logo-kopiah.png` sudah ada di folder baru.
 
 Kalau kamu memilih instalasi baru, ikuti langkah standar di atas dan import `database/kopiah.sql` ke database `kopiah`.
->>>>>>> 0119df2 (ubah nama website)
 
 ## 3. Akun default dan password
 
 | Role | Username | Password awal |
 |---|---|---|
-<<<<<<< HEAD
-| Owner | `owner` | `Cafeyu#2026!` |
-=======
 | Owner | `owner` | `Kopiah#2026!` |
->>>>>>> 0119df2 (ubah nama website)
 | Kasir demo | `kasir` | `Kasir#2026!` |
 
 **Penting:** ini kredensial demo untuk instalasi lokal. Setelah berhasil login, buka menu **Ganti password** pada header panel dan segera buat password sendiri yang kuat (minimal 12 karakter). Jangan menggunakan kredensial demo di server publik. Owner dapat membuat akun kasir baru dan mereset password akun kasir melalui panel Owner → Akun Kasir. Jangan pernah membagikan password owner ke kasir.
@@ -121,11 +82,7 @@ Salin hasil hash ke kolom `password_hash` untuk user `owner` di phpMyAdmin. Jang
 
 ### Cara paling gampang untuk laptop yang sama
 
-<<<<<<< HEAD
-Buka `http://localhost/cafeyu/camera.php`. Browser modern menganggap `localhost` sebagai konteks aman sehingga `getUserMedia()` dapat digunakan setelah izin kamera diberikan. Jangan membuka file PHP dengan double-click atau melalui `file:///...`.
-=======
 Buka `http://localhost/kopiah/camera.php`. Browser modern menganggap `localhost` sebagai konteks aman sehingga `getUserMedia()` dapat digunakan setelah izin kamera diberikan. Jangan membuka file PHP dengan double-click atau melalui `file:///...`.
->>>>>>> 0119df2 (ubah nama website)
 
 ### HTTPS lokal dengan mkcert (opsional)
 
@@ -144,13 +101,8 @@ Langkah ini berguna untuk menguji lewat nama host/akses jaringan lokal. Pada Win
    ```
 
 3. Salin hasil file `.pem` dan `-key.pem` ke lokasi Apache, misalnya:
-<<<<<<< HEAD
-   - `C:\xampp\apache\conf\ssl.crt\cafeyu.pem`
-   - `C:\xampp\apache\conf\ssl.key\cafeyu-key.pem`
-=======
    - `C:\xampp\apache\conf\ssl.crt\kopiah.pem`
    - `C:\xampp\apache\conf\ssl.key\kopiah-key.pem`
->>>>>>> 0119df2 (ubah nama website)
 
    Sesuaikan nama file dengan output `mkcert` yang sebenarnya.
 4. Di `C:\xampp\apache\conf\httpd.conf`, pastikan modul SSL aktif dan konfigurasi SSL di-include (hapus `#` di awal baris jika diperlukan):
@@ -164,21 +116,12 @@ Langkah ini berguna untuk menguji lewat nama host/akses jaringan lokal. Pada Win
 5. Di `C:\xampp\apache\conf\extra\httpd-ssl.conf`, atur path sertifikat dan key pada directive `SSLCertificateFile` dan `SSLCertificateKeyFile`, contohnya:
 
    ```apache
-<<<<<<< HEAD
-   SSLCertificateFile "C:/xampp/apache/conf/ssl.crt/cafeyu.pem"
-   SSLCertificateKeyFile "C:/xampp/apache/conf/ssl.key/cafeyu-key.pem"
-   ```
-
-6. Pastikan Apache mendengarkan port 443 (`Listen 443`), simpan konfigurasi, lalu restart Apache.
-7. Buka `https://localhost/cafeyu/camera.php`. Sertifikat yang dibuat untuk localhost tidak otomatis cocok untuk IP LAN atau ponsel; untuk pengujian perangkat lain, buat sertifikat yang menyertakan host/IP yang benar dan instal CA lokal ke perangkat uji. Untuk penggunaan publik, gunakan domain dan sertifikat TLS yang valid.
-=======
    SSLCertificateFile "C:/xampp/apache/conf/ssl.crt/kopiah.pem"
    SSLCertificateKeyFile "C:/xampp/apache/conf/ssl.key/kopiah-key.pem"
    ```
 
 6. Pastikan Apache mendengarkan port 443 (`Listen 443`), simpan konfigurasi, lalu restart Apache.
 7. Buka `https://localhost/kopiah/camera.php`. Sertifikat yang dibuat untuk localhost tidak otomatis cocok untuk IP LAN atau ponsel; untuk pengujian perangkat lain, buat sertifikat yang menyertakan host/IP yang benar dan instal CA lokal ke perangkat uji. Untuk penggunaan publik, gunakan domain dan sertifikat TLS yang valid.
->>>>>>> 0119df2 (ubah nama website)
 
 ### Jika kamera tidak berjalan
 

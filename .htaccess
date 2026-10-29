@@ -1,0 +1,8 @@
+Options -Indexes
+<<<<<<< HEAD
+<FilesMatch "^(cafeyu\.sql|README_INSTALL\.md)$">
+=======
+<FilesMatch "^(kopiah\.sql|README_INSTALL\.md|migrasi_branding_kopiah\.sql)$">
+>>>>>>> 0119df2 (ubah nama website)
+  Require all denied
+</FilesMatch>

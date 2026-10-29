@@ -1,0 +1,23 @@
+<?php
+require_once __DIR__ . '/config/auth.php';
+$id=(int)($_GET['id']??0);$st=$pdo->prepare('SELECT m.*,c.nama kategori FROM menus m JOIN categories c ON c.id=m.category_id WHERE m.id=?');$st->execute([$id]);$menu=$st->fetch();if(!$menu){http_response_code(404);exit('Menu tidak ditemukan. <a href="menu.php">Kembali</a>');}
+$error='';
+if($_SERVER['REQUEST_METHOD']==='POST'){
+ csrf_check();
+ if(!$menu['is_available'] || (int)$menu['stok']<=0){$error='menu sedang habis.';} else {
+  $posted=(array)($_POST['options']??[]);$toppings=array_map('intval',(array)($_POST['toppings']??[]));$selectedIds=[];
+  foreach($posted as $type=>$optid){if(ctype_digit((string)$optid))$selectedIds[]=(int)$optid;}
+  $selectedIds=array_merge($selectedIds,$toppings);$options=[];$extra=0;
+  if($selectedIds){$marks=implode(',',array_fill(0,count($selectedIds),'?'));$args=array_merge([$id],$selectedIds);$os=$pdo->prepare("SELECT id,nama_opsi,tipe,harga_tambahan FROM menu_options WHERE menu_id=? AND id IN ($marks)");$os->execute($args);foreach($os->fetchAll() as $o){$options[]=['id'=>(int)$o['id'],'nama'=>$o['nama_opsi'],'tipe'=>$o['tipe'],'harga'=>(float)$o['harga_tambahan']];$extra+=(float)$o['harga_tambahan'];}}
+  $note=clean_text((string)($_POST['catatan']??''),300);$qty=max(1,min(20,(int)($_POST['qty']??1)));$key=$id.':'.substr(hash('sha256',json_encode($options)),0,10);
+  if(!isset($_SESSION['cart']))$_SESSION['cart']=[];
+  if(isset($_SESSION['cart'][$key]))$_SESSION['cart'][$key]['qty']=min(20,(int)$_SESSION['cart'][$key]['qty']+$qty);else $_SESSION['cart'][$key]=['key'=>$key,'menu_id'=>$id,'name'=>$menu['nama'],'price'=>(float)$menu['harga']+$extra,'base_price'=>(float)$menu['harga'],'qty'=>$qty,'options'=>$options,'note'=>$note,'foto'=>$menu['foto']];
+  if($note!=='' && isset($_SESSION['cart'][$key]))$_SESSION['cart'][$key]['note']=$note;
+  header('Location: '.BASE_URL.'/cart.php?added=1');exit;
+ }
+}
+$os=$pdo->prepare('SELECT * FROM menu_options WHERE menu_id=? ORDER BY tipe,id');$os->execute([$id]);$groups=[];foreach($os->fetchAll() as $o)$groups[$o['tipe']][]=$o;
+$pageTitle=$menu['nama'];require __DIR__.'/includes/header.php'; ?>
+<section class="max-w-6xl mx-auto px-4 py-8"><a class="text-sm text-coffee/60 hover:text-coffee" href="<?= h(BASE_URL) ?>/menu.php">← kembali ke menu</a><div class="grid lg:grid-cols-2 gap-7 lg:gap-12 mt-5 items-start"><div class="rounded-[28px] overflow-hidden bg-white"><img src="<?= h($menu['foto'] ?: 'assets/img/coffee-placeholder.svg') ?>" alt="<?= h($menu['nama']) ?>" class="w-full aspect-[4/3] object-cover"></div><div class="card p-5 sm:p-8"><div class="flex gap-2 items-center"><span class="section-kicker"><?= h($menu['kategori']) ?></span><?php if($menu['is_best_seller']):?><span class="badge-soft">Best Seller</span><?php endif;?></div><h1 class="font-serif text-3xl sm:text-4xl mt-3"><?= h($menu['nama']) ?></h1><p class="text-coffee/70 leading-7 mt-4"><?= h($menu['deskripsi']) ?></p><p class="text-2xl font-bold mt-5"><?= money($menu['harga']) ?></p>
+<?php if($error): ?><div class="flash flash-error"><?= h($error) ?></div><?php endif; ?><?php if(!$menu['is_available']||(int)$menu['stok']<=0): ?><div class="flash flash-warn">maaf, menu ini sedang habis.</div><?php else: ?><form method="post" class="mt-6 space-y-5"><input type="hidden" name="_csrf" value="<?= h(csrf_token()) ?>"><?php foreach($groups as $type=>$opts): ?><fieldset><legend class="field-label mb-2"><?= h($type) ?></legend><div class="grid grid-cols-2 gap-2"><?php foreach($opts as $i=>$o): ?><label class="flex items-center gap-2 border border-coffee/10 bg-white rounded-xl p-3 text-sm"><input type="<?= strtolower($type)==='topping'?'checkbox':'radio' ?>" name="<?= strtolower($type)==='topping'?'toppings[]':'options['.h($type).']' ?>" value="<?= (int)$o['id'] ?>" class="accent-[#8A9A5B]" <?= $i===0 && strtolower($type)!=='topping'?'checked':'' ?>><span><?= h($o['nama_opsi']) ?></span><?php if((float)$o['harga_tambahan']>0): ?><small class="ml-auto text-coffee/60">+<?= money($o['harga_tambahan']) ?></small><?php endif;?></label><?php endforeach;?></div></fieldset><?php endforeach; ?><div><label class="field-label" for="catatan">Catatan untuk barista (opsional)</label><textarea class="field" rows="2" name="catatan" id="catatan" placeholder="contoh: es sedikit, jangan terlalu manis..."></textarea></div><div class="flex items-center justify-between gap-4"><label class="field-label mb-0">Jumlah <input class="field mt-2 w-24" type="number" name="qty" value="1" min="1" max="20"></label><button class="btn btn-coffee flex-1" type="submit">Tambah ke keranjang · <?= money($menu['harga']) ?></button></div></form><?php endif;?></div></div></section>
+<?php require __DIR__.'/includes/footer.php'; ?>

@@ -10,7 +10,9 @@ use App\Http\Controllers\Kasir;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuImageController;
 use App\Http\Controllers\MomentController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TrackController;
+use App\Http\Controllers\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +39,20 @@ Route::delete('/keranjang/{key}', [CartController::class, 'destroy'])->name('car
 
 Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+// Pembayaran QRIS & halaman pesanan pelanggan. Memakai token acak pesanan (bukan kode pesanan).
+Route::prefix('bayar/{order:token}')->where(['order' => '[A-Za-z0-9]{32}'])->name('payment.')->group(function () {
+    Route::get('/', [PaymentController::class, 'show'])->name('show');
+    Route::post('/qris', [PaymentController::class, 'start'])->middleware('throttle:20,1')->name('start');
+    Route::get('/status', [PaymentController::class, 'status'])->middleware('throttle:90,1')->name('status');
+});
+Route::get('/pesanan/{order:token}', [PaymentController::class, 'success'])
+    ->where('order', '[A-Za-z0-9]{32}')->name('order.success');
+Route::get('/struk/{order:token}', [PaymentController::class, 'receipt'])
+    ->where('order', '[A-Za-z0-9]{32}')->name('order.receipt');
+
+// Webhook Xendit (tanpa CSRF & sesi; diverifikasi lewat header x-callback-token).
+Route::post('/webhooks/xendit', XenditWebhookController::class)->middleware('throttle:120,1')->name('webhooks.xendit');
 
 Route::get('/lacak', [TrackController::class, 'show'])->name('track.show');
 Route::post('/lacak/{order:kode_pesanan}/ulasan', [TrackController::class, 'review'])->name('track.review');

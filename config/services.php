@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    // Xendit QRIS dinamis. Kunci hanya dibaca di server; tidak pernah dikirim ke frontend.
+    'xendit' => [
+        'secret_key' => env('XENDIT_SECRET_KEY'),
+        'webhook_token' => env('XENDIT_WEBHOOK_TOKEN'),
+        'base_url' => env('XENDIT_BASE_URL', 'https://api.xendit.co'),
+        'api_version' => '2022-07-31',
+        'expiry_minutes' => (int) env('QRIS_EXPIRY_MINUTES', 10),
+    ],
+
 ];

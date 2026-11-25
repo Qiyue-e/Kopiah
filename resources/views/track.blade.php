@@ -18,6 +18,12 @@
     @php($steps = ['Diterima', 'Diproses', 'Siap', 'Selesai'])
     @php($idx = array_search($order->status_pesanan, $steps, true))
     <div class="card p-5 sm:p-8 mt-6">
+      @if ($order->antrean_label)
+        <div class="text-center mb-6">
+          <p class="text-xs text-coffee/55">nomor antrean</p>
+          <p class="queue-number font-bold text-7xl mt-1">{{ $order->antrean_label }}</p>
+        </div>
+      @endif
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p class="text-xs text-coffee/55">kode pesanan</p>
@@ -42,6 +48,11 @@
       </div>
       <p class="text-sm text-coffee/60 mt-5" id="status-message">{{ $order->status_pesanan === 'Selesai' ? 'pesanan selesai. terima kasih sudah mampir ke Kopiah!' : 'status diperbarui otomatis setiap 5 detik.' }}</p>
       <p class="text-xs text-coffee/50 mt-2">dibuat pada {{ $order->created_at->translatedFormat('d M Y H:i') }} WIB</p>
+      @if ($order->isAwaitingPayment())
+        <a class="btn btn-coffee mt-4" href="{{ route('payment.show', $order->token) }}">Lanjutkan pembayaran QRIS</a>
+      @elseif ($order->status_bayar === 'Lunas' || ($order->metode_bayar === 'Kasir' && $order->status_pesanan !== 'Dibatalkan'))
+        <a class="btn btn-light mt-4" href="{{ route('order.receipt', $order->token) }}">Lihat struk</a>
+      @endif
 
       @if ($order->status_pesanan === 'Selesai')
         @if (! $order->review)

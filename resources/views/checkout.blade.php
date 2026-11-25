@@ -5,9 +5,17 @@
   <p class="section-kicker">satu langkah lagi</p>
   <h1 class="font-serif text-4xl mt-2">checkout</h1>
   <p class="text-sm text-coffee/60 mt-2">isi detail pesananmu. kamu tidak perlu membuat akun.</p>
-  <div class="mt-4"><x-flash /></div>
+  <div class="mt-4" id="checkout-flash"><x-flash /></div>
 
-  <form method="post" action="{{ route('checkout.store') }}" class="grid lg:grid-cols-[1fr_340px] gap-6 mt-7">
+  {{-- Setelah menekan "Bayar" dengan QRIS, form disembunyikan dan QR tampil di sini (tanpa pindah halaman). --}}
+  @if ($qrisEnabled)
+    <div id="checkout-pay" class="mt-7 hidden scroll-mt-24">
+      @include('payment._panel')
+      <p class="text-xs text-center text-coffee/55 mt-5">pesanan masuk ke kasir setelah pembayaran terkonfirmasi.</p>
+    </div>
+  @endif
+
+  <form id="checkout-form" method="post" action="{{ route('checkout.store') }}" class="grid lg:grid-cols-[1fr_340px] gap-6 mt-7">
     @csrf
     <div class="card p-5 sm:p-7 space-y-5">
       <div>
@@ -30,12 +38,14 @@
             <input type="radio" class="accent-[#8A9A5B] mt-1" name="metode_bayar" value="Kasir" @checked(old('metode_bayar', 'Kasir') === 'Kasir')>
             <span><b class="block text-sm">Bayar di kasir</b><small class="block text-xs mt-1 text-coffee/60">tunai atau QRIS di kasir</small></span>
           </label>
-          <label class="border border-coffee/15 rounded-2xl p-4 flex gap-3">
-            <input type="radio" class="accent-[#8A9A5B] mt-1" name="metode_bayar" value="QRIS" @checked(old('metode_bayar') === 'QRIS')>
-            <span><b class="block text-sm">QRIS</b><small class="block text-xs mt-1 text-coffee/60">menunggu konfirmasi kasir</small></span>
+          <label class="border border-coffee/15 rounded-2xl p-4 flex gap-3 {{ $qrisEnabled ? '' : 'opacity-50' }}">
+            <input type="radio" class="accent-[#8A9A5B] mt-1" name="metode_bayar" value="QRIS" @checked($qrisEnabled && old('metode_bayar') === 'QRIS') @disabled(! $qrisEnabled)>
+            <span><b class="block text-sm">QRIS</b><small class="block text-xs mt-1 text-coffee/60">{{ $qrisEnabled ? 'scan di sini, otomatis terkonfirmasi' : 'belum tersedia' }}</small></span>
           </label>
         </div>
-        <p class="text-xs text-coffee/55 mt-2">{{ setting('qris_info', 'Pembayaran QRIS dikonfirmasi oleh kasir.') }}</p>
+        @unless ($qrisEnabled)
+          <p class="text-xs text-coffee/55 mt-2">{{ setting('qris_info', 'Pembayaran QRIS dikonfirmasi oleh kasir.') }}</p>
+        @endunless
       </div>
       <div>
         <label class="field-label" for="promo">kode promo (opsional)</label>
@@ -57,9 +67,71 @@
       <div class="flex justify-between text-sm"><span>Subtotal</span><span>@rupiah($subtotal)</span></div>
       <div class="flex justify-between text-sm mt-2"><span>Promo &amp; pajak/service</span><span>dihitung saat proses</span></div>
       <div class="flex justify-between font-bold border-t border-coffee/10 mt-4 pt-4"><span>Estimasi total</span><span>@rupiah($subtotal)+</span></div>
-      <button class="btn btn-coffee w-full mt-5" type="submit">Buat Pesanan →</button>
-      <p class="text-xs text-center text-coffee/55 mt-3">dengan melanjutkan, pesanan akan dikirim ke kasir.</p>
+      <button class="btn btn-coffee w-full mt-5" type="submit" id="checkout-submit" data-label-kasir="Buat Pesanan →" data-label-qris="Bayar dengan QRIS →">Buat Pesanan →</button>
+      <p class="text-xs text-center text-coffee/55 mt-3" id="checkout-note" data-note-kasir="dengan melanjutkan, pesanan akan dikirim ke kasir." data-note-qris="pesanan masuk ke kasir setelah pembayaran QRIS terkonfirmasi.">dengan melanjutkan, pesanan akan dikirim ke kasir.</p>
     </aside>
   </form>
 </section>
 @endsection
+@if ($qrisEnabled)
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="{{ asset('js/payment.js') }}"></script>
+<script>
+(function () {
+  const form = document.getElementById('checkout-form'), btn = document.getElementById('checkout-submit');
+  const note = document.getElementById('checkout-note'), flash = document.getElementById('checkout-flash');
+  const payBox = document.getElementById('checkout-pay');
+  const method = () => form.querySelector('input[name="metode_bayar"]:checked')?.value;
+
+  function syncLabels() {
+    const q = method() === 'QRIS';
+    btn.textContent = q ? btn.dataset.labelQris : btn.dataset.labelKasir;
+    note.textContent = q ? note.dataset.noteQris : note.dataset.noteKasir;
+  }
+  form.querySelectorAll('input[name="metode_bayar"]').forEach(el => el.addEventListener('change', syncLabels));
+  syncLabels();
+
+  function showError(messages) {
+    flash.innerHTML = '';
+    const box = document.createElement('div');
+    box.className = 'flash flash-error mb-4'; box.setAttribute('role', 'alert');
+    messages.forEach(m => { const d = document.createElement('div'); d.textContent = m; box.appendChild(d); });
+    flash.appendChild(box);
+    flash.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  form.addEventListener('submit', async e => {
+    if (method() !== 'QRIS') return; // "bayar di kasir" tetap kirim form biasa
+    e.preventDefault();
+    if (btn.disabled) return;
+    btn.disabled = true; btn.textContent = 'Membuat pesanan...';
+    try {
+      const r = await fetch(form.action, {
+        method: 'POST', body: new FormData(form),
+        headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        const msgs = d.errors ? Object.values(d.errors).flat() : [d.message || 'pesanan gagal dibuat. coba lagi.'];
+        showError(msgs);
+        btn.disabled = false; syncLabels();
+        return;
+      }
+      flash.innerHTML = '';
+      form.classList.add('hidden');
+      payBox.classList.remove('hidden');
+      history.replaceState(null, '', d.pay_url); // refresh membuka halaman bayar untuk pesanan yang sama
+      payBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      KopiahPayment.mount(payBox.querySelector('[data-payment]'), {
+        startUrl: d.start_url, statusUrl: d.status_url, amount: d.amount, secondsLeft: d.seconds_left,
+      });
+    } catch (err) {
+      showError(['koneksi gagal. periksa internet lalu coba lagi.']);
+      btn.disabled = false; syncLabels();
+    }
+  });
+})();
+</script>
+@endpush
+@endif

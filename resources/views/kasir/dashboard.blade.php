@@ -16,16 +16,17 @@
     <a class="btn btn-coffee !py-2" href="{{ route('kasir.orders.index') }}">Kelola pesanan →</a>
   </div>
   <div class="table-wrap mt-3"><table class="admin-table">
-    <thead><tr><th>Kode</th><th>Pelanggan</th><th>Total</th><th>Status</th><th>Bayar</th><th></th></tr></thead>
+    <thead><tr><th>Antrean</th><th>Kode</th><th>Pelanggan</th><th>Total</th><th>Status</th><th>Bayar</th><th></th></tr></thead>
     <tbody>
       @forelse ($latest as $order)
         <tr>
+          <td><span class="queue-number font-bold text-2xl">{{ $order->antrean_label ?? '–' }}</span></td>
           <td class="font-semibold">{{ $order->kode_pesanan }}<span class="block text-xs text-coffee/45">{{ $order->created_at->format('H:i') }}</span></td>
           <td>{{ $order->nama_pelanggan }}</td><td>@rupiah($order->total)</td><td>{{ $order->status_pesanan }}</td><td>{{ $order->status_bayar }}</td>
           <td><a class="underline text-xs" href="{{ route('kasir.receipt', $order->kode_pesanan) }}">Struk</a></td>
         </tr>
       @empty
-        <tr><td colspan="6">belum ada pesanan hari ini.</td></tr>
+        <tr><td colspan="7">belum ada pesanan hari ini.</td></tr>
       @endforelse
     </tbody>
   </table></div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Services\OrderPaymentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,9 +23,12 @@ class OrderController extends Controller
     }
 
     /** Potongan HTML daftar pesanan; di-refresh halaman setiap 5 detik. */
-    public function list(): View
+    public function list(OrderPaymentService $payments): View
     {
+        $payments->expireDue(); // pesanan QRIS terabaikan dibersihkan walau scheduler belum dijalankan
+
         $orders = Order::with(['items', 'meja', 'kasir'])
+            ->visibleToKasir()
             ->notCancelled()
             ->where('created_at', '>=', now()->subDays(7))
             ->latest()->limit(80)->get();
@@ -33,9 +37,11 @@ class OrderController extends Controller
     }
 
     /** Dipakai dashboard untuk mendeteksi pesanan baru. */
-    public function poll(): JsonResponse
+    public function poll(OrderPaymentService $payments): JsonResponse
     {
-        $today = Order::notCancelled()->whereDate('created_at', today())->get(['id', 'status_pesanan']);
+        $payments->expireDue();
+
+        $today = Order::visibleToKasir()->notCancelled()->whereDate('created_at', today())->get(['id', 'status_pesanan']);
 
         return response()->json([
             'ids' => $today->pluck('id'),
@@ -53,12 +59,18 @@ class OrderController extends Controller
         return $this->respond($request, 'status pesanan diperbarui.');
     }
 
-    public function updatePayment(Request $request, Order $order): JsonResponse|RedirectResponse
+    public function updatePayment(Request $request, Order $order, OrderPaymentService $payments): JsonResponse|RedirectResponse
     {
         $data = $request->validate([
             'status_bayar' => ['required', Rule::in(Order::PAYMENT_STATUSES)],
             'metode_bayar' => ['required', Rule::in(Order::METHODS)],
         ]);
+
+        // Konfirmasi manual oleh kasir juga harus memberi nomor antrean dan waktu bayar (idempoten).
+        if ($data['status_bayar'] === 'Lunas' && $order->status_bayar !== 'Lunas') {
+            $payments->markPaid($order);
+            $order->refresh();
+        }
 
         $order->update($data + ['kasir_id' => $order->kasir_id ?? $request->user()->id]);
         ActivityLog::record('update_order_payment', "Pesanan {$order->kode_pesanan} → {$data['status_bayar']} ({$data['metode_bayar']})");

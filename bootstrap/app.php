@@ -21,6 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'table.qr' => RememberTable::class,
         ]);
 
+        // Callback server-ke-server dari Xendit tidak membawa token CSRF; keamanannya lewat x-callback-token.
+        $middleware->validateCsrfTokens(except: ['webhooks/*']);
+
         // Staf yang belum login diarahkan ke halaman login; yang sudah login ke dashboard-nya.
         $middleware->redirectGuestsTo(fn (Request $request) => route('login'));
         $middleware->redirectUsersTo(fn (Request $request) => $request->user()->homeUrl());

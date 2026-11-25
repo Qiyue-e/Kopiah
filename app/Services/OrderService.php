@@ -59,8 +59,14 @@ class OrderService
                 $note = trim($note.' | Promo: '.$promo->kode, ' |');
             }
 
+            // Pesanan QRIS dari website menunggu pembayaran dengan batas waktu; pesanan POS (kasir_id terisi)
+            // dikonfirmasi langsung oleh kasir sehingga tidak ikut kedaluwarsa otomatis.
+            $awaitingQris = ! $paid && $method === 'QRIS' && $kasirId === null;
+
             $order = Order::create([
                 'kode_pesanan' => Order::generateCode(),
+                'expires_at' => $awaitingQris ? now()->addMinutes((int) config('services.xendit.expiry_minutes', 10)) : null,
+                'paid_at' => $paid ? now() : null,
                 'nama_pelanggan' => $customer['nama_pelanggan'],
                 'table_id' => ($customer['table_id'] ?? null) ?: null,
                 'subtotal' => $subtotal,
@@ -87,6 +93,12 @@ class OrderService
 
             if ($promo) {
                 $order->promoUsage()->create(['promo_id' => $promo->id]);
+            }
+
+            // Nomor antrean dibuat saat pesanan resmi masuk ke kasir: langsung untuk "bayar di kasir" dan POS,
+            // sedangkan QRIS website baru bernomor setelah pembayaran terkonfirmasi (OrderPaymentService::markPaid).
+            if (! $awaitingQris) {
+                $order->assignQueueNumber();
             }
 
             return $order;

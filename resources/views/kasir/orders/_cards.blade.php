@@ -1,10 +1,15 @@
 @forelse ($orders as $order)
   <article class="card p-5">
     <div class="flex items-start justify-between gap-3">
-      <div>
+      <div class="flex items-start gap-4">
+        @if ($order->antrean_label)
+          <div class="text-center" title="Nomor antrean"><p class="text-[10px] text-coffee/50">antrean</p><p class="queue-number font-bold text-4xl mt-1">{{ $order->antrean_label }}</p></div>
+        @endif
+        <div>
         <p class="text-xs text-coffee/50">{{ $order->created_at->format('Y-m-d H:i:s') }}</p>
         <h2 class="font-semibold mt-1">{{ $order->kode_pesanan }}</h2>
         <p class="text-sm text-coffee/65 mt-1">{{ $order->nama_pelanggan }} · {{ $order->meja ? 'Meja '.$order->meja->nomor_meja : 'Take away' }}</p>
+        </div>
       </div>
       <span class="status-pill {{ $order->status_pesanan === 'Selesai' ? 'status-green' : ($order->status_pesanan === 'Siap' ? 'status-orange' : '') }}">{{ $order->status_pesanan }}</span>
     </div>

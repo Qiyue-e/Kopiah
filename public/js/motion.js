@@ -1,4 +1,4 @@
-/* Animasi scroll halaman pelanggan: Lenis (scroll halus) + GSAP ScrollTrigger (reveal per kata) + Motion (kartu, cover).
+/* Animasi scroll halaman pelanggan: GSAP ScrollTrigger (reveal per kata) + Motion (kartu, cover).
    - Diinisialisasi sekali di layout pelanggan; dibersihkan saat halaman ditinggalkan. Tidak dimuat di panel kasir/owner.
    - Hanya transform dan opacity. prefers-reduced-motion, atau CDN gagal dimuat: konten tampil apa adanya.
    - API ulang pakai: Kopiah.splitReveal(selector), atau atribut data-stagger / data-reveal di markup. */
@@ -6,10 +6,10 @@
   'use strict';
   const html = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  const ready = () => window.gsap && window.ScrollTrigger && window.Lenis && window.Motion;
+  const ready = () => window.gsap && window.ScrollTrigger && window.Motion;
   const done = () => html.classList.remove('motion-pending'); // tampilkan konten yang tadinya disembunyikan menunggu skrip
 
-  let ctx = null, lenis = null, tick = null, stops = [], active = false;
+  let ctx = null, stops = [], active = false;
 
   const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const visible = el => el.getClientRects().length > 0;
@@ -72,12 +72,6 @@
     active = true;
     gsap.registerPlugin(ScrollTrigger);
 
-    lenis = new Lenis({ duration: 1.1, easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
-    lenis.on('scroll', ScrollTrigger.update);
-    tick = time => lenis.raf(time * 1000);
-    gsap.ticker.add(tick);
-    gsap.ticker.lagSmoothing(0);
-
     ctx = gsap.context(() => { splitReveal('main h1, main h2'); });
     revealGroups();
     done();
@@ -89,8 +83,6 @@
     active = false;
     stops.forEach(s => { try { s(); } catch (e) {} }); stops = [];
     if (ctx) { ctx.revert(); ctx = null; }
-    if (tick) { gsap.ticker.remove(tick); tick = null; }
-    if (lenis) { lenis.destroy(); lenis = null; }
     document.querySelectorAll('[data-stagger] > *, [data-reveal], .menu-photo, .lk-photo').forEach(el => { el.style.opacity = ''; el.style.transform = ''; });
   }
 

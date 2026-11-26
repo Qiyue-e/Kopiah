@@ -6,7 +6,7 @@
   <a class="btn btn-coffee" href="{{ route('kasir.pos.create') }}">＋ Pesanan manual</a>
 </div>
 <div id="orderMessage" class="flash flash-ok hidden" role="status"></div>
-<div id="ordersList" class="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4"><div class="card p-8 text-center text-sm text-coffee/60 lg:col-span-2 2xl:col-span-3">memuat pesanan...</div></div>
+<div id="ordersList" class="grid lg:grid-cols-2 2xl:grid-cols-3 gap-4">@foreach ([1, 2, 3] as $i)<x-skeleton variant="card" />@endforeach</div>
 @include('kasir._availability', ['menus' => $menus, 'class' => 'mt-7'])
 @endsection
 @push('scripts')

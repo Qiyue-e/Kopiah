@@ -28,7 +28,7 @@
     const mm = Number(paper.value);
     const heightMm = Math.ceil(receipt.offsetHeight * MM_PER_PX) + 4;
     const label = pdfBtn.textContent;
-    pdfBtn.disabled = true; pdfBtn.textContent = 'Menyiapkan...';
+    pdfBtn.disabled = true; pdfBtn.classList.add('is-loading'); pdfBtn.setAttribute('aria-busy', 'true');
     try {
       await html2pdf().set({
         margin: 0,
@@ -40,7 +40,7 @@
     } catch (e) {
       alert('PDF gagal dibuat. coba tombol Cetak lalu pilih "Simpan sebagai PDF".');
     } finally {
-      pdfBtn.disabled = false; pdfBtn.textContent = label;
+      pdfBtn.disabled = false; pdfBtn.classList.remove('is-loading'); pdfBtn.removeAttribute('aria-busy'); pdfBtn.textContent = label;
     }
   });
 })();

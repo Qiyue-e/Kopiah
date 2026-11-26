@@ -122,8 +122,8 @@
 .lp-rule{border-top:1px dashed rgba(46,32,24,.25);margin-block:20px}
 
 /* Kartu menu */
-.menu-card .menu-photo{height:200px;background:var(--sunk);transition:opacity .2s var(--ease)}
-.menu-card:hover .menu-photo{transform:none;opacity:.92}
+.menu-card .menu-photo{height:200px;background:var(--sunk)}
+
 .menu-name{font-weight:500;transition:color .15s var(--ease)}
 .menu-name:hover{color:var(--accent)}
 .menu-tag{position:absolute;top:12px;left:12px;font-size:12px;line-height:16px;padding:4px 8px;border-radius:6px;background:var(--raised);color:var(--ink-2);border:1px solid var(--line)}
@@ -142,3 +142,47 @@
 .rating{color:var(--accent);letter-spacing:0}
 @media(max-width:640px){.lp-facts>div{grid-template-columns:1fr;gap:4px}.lp-receipt{padding:24px}.lp-queue{font-size:56px;line-height:56px}}
 @media(prefers-reduced-motion:reduce){.btn,.menu-add,.lp-link,.nav-link,.menu-name{transition:none}}
+
+/* ===== Animasi (Bagian D) ===== */
+/* Skeleton: token terang/gelap, bentuk mengikuti konten, shimmer hanya transform */
+:root{--sk-base:rgba(75,46,30,.08);--sk-shine:rgba(255,255,255,.55)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--sk-base:rgba(255,255,255,.08);--sk-shine:rgba(255,255,255,.10)}}
+:root[data-theme=dark]{--sk-base:rgba(255,255,255,.08);--sk-shine:rgba(255,255,255,.10)}
+.skeleton{background:var(--sk-base)}
+.skeleton::after{background:linear-gradient(90deg,transparent,var(--sk-shine),transparent)}
+.sk-line{display:block;height:12px;width:100%;border-radius:6px}
+.sk-block{display:block;width:100%;border-radius:12px}
+.sk-circle{display:block;width:40px;height:40px;border-radius:50%}
+.sk-stack{display:grid;gap:12px}
+.sk-card{overflow:hidden}
+.sk-card .sk-block{border-radius:0}
+/* skeleton gambar: hanya aktif bila JS berjalan (tanpa JS foto tampil biasa) */
+.js-ui .img-wait{position:relative;background:var(--sk-base)}
+.js-ui .img-wait::after{content:"";position:absolute;inset:0;pointer-events:none;transform:translateX(-100%);background:linear-gradient(90deg,transparent,var(--sk-shine),transparent);animation:skeleton-shimmer 1.4s ease-in-out infinite}
+
+/* Reveal: elemen disembunyikan hanya selagi skrip animasi menunggu (dilepas otomatis bila gagal) */
+.motion-pending main h1,.motion-pending main h2,.motion-pending [data-reveal],.motion-pending [data-stagger]>*{opacity:0}
+.sw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.sw-i{display:inline-block;will-change:transform}
+[data-parallax]{will-change:transform}
+
+/* Tombol: tekan, loading (shimmer, bukan spinner) */
+.btn{position:relative;overflow:hidden}
+.btn:active{transform:none;scale:.98}
+.btn.is-loading{pointer-events:none;opacity:.75}
+.btn.is-loading::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);animation:skeleton-shimmer 1.2s ease-in-out infinite}
+.btn-light.is-loading::after{background:linear-gradient(90deg,transparent,rgba(75,46,30,.10),transparent)}
+
+/* Kartu: naik 2px dan bayangan lewat opacity; hanya perangkat dengan hover (bukan sentuh) */
+.menu-card,.lp-promo,.lk-card{position:relative}
+.menu-card::after,.lp-promo::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 8px 24px rgba(46,32,24,.10);opacity:0;pointer-events:none;transition:opacity .2s var(--ease)}
+@media (hover:hover) and (pointer:fine){
+  .menu-card,.lp-promo{transition:translate .2s var(--ease)}
+  .menu-card:hover,.lp-promo:hover{translate:0 -2px}
+  .menu-card:hover::after,.lp-promo:hover::after{opacity:1}
+  .menu-card:hover .menu-photo{transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .btn.is-loading::after,.js-ui .img-wait::after{animation:none;opacity:0}
+  .menu-card,.lp-promo,.menu-card::after,.lp-promo::after{transition:none}
+}

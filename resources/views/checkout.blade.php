@@ -105,7 +105,7 @@
     if (method() !== 'QRIS') return; // "bayar di kasir" tetap kirim form biasa
     e.preventDefault();
     if (btn.disabled) return;
-    btn.disabled = true; btn.textContent = 'Membuat pesanan...';
+    btn.disabled = true; btn.classList.add('is-loading'); btn.setAttribute('aria-busy', 'true');
     try {
       const r = await fetch(form.action, {
         method: 'POST', body: new FormData(form),
@@ -115,7 +115,7 @@
       if (!r.ok) {
         const msgs = d.errors ? Object.values(d.errors).flat() : [d.message || 'pesanan gagal dibuat. coba lagi.'];
         showError(msgs);
-        btn.disabled = false; syncLabels();
+        btn.disabled = false; btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); syncLabels();
         return;
       }
       flash.innerHTML = '';
@@ -128,7 +128,7 @@
       });
     } catch (err) {
       showError(['koneksi gagal. periksa internet lalu coba lagi.']);
-      btn.disabled = false; syncLabels();
+      btn.disabled = false; btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); syncLabels();
     }
   });
 })();

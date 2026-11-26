@@ -22,7 +22,7 @@
 </section>
 <section class="max-w-7xl mx-auto px-4 pb-12">
   <x-flash />
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6" data-stagger>
     @foreach ($menus as $menu)<x-menu-card :menu="$menu" />@endforeach
   </div>
   @if ($menus->isEmpty())

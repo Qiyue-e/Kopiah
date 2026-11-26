@@ -5,6 +5,7 @@
   @include('layouts.partials.head')
   <title>@yield('title', setting('cafe_name', 'Kopiah')) | {{ setting('cafe_name', 'Kopiah') }}</title>
   <meta name="description" content="Kopiah — Ngopi santai, momen jadi berarti.">
+  <script>/* sembunyikan elemen yang akan dianimasikan sampai skrip siap; jaga-jaga bila CDN gagal */(function(){var d=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('motion-pending');setTimeout(function(){d.classList.remove('motion-pending')},2500)}})();</script>
   @stack('head')
 </head>
 <body class="bg-paper text-coffee font-sans min-h-screen flex flex-col">
@@ -51,6 +52,12 @@
   </div>
   <div class="border-t border-white/10 text-center py-4 text-xs text-cream/60">© {{ date('Y') }} Kopiah</div>
 </footer>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+<script defer src="{{ asset('js/ui.js') }}"></script>
+<script defer src="{{ asset('js/motion.js') }}"></script>
 @stack('scripts')
 </body>
 </html>

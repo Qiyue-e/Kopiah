@@ -9,14 +9,14 @@
   <div class="max-w-7xl mx-auto px-6 py-16 lg:py-24 grid lg:grid-cols-12 gap-12 items-center">
     <div class="lg:col-span-6">
       <h1 class="lp-display">Pesan dari meja, bayar lewat QRIS, tunggu nomor antreanmu</h1>
-      <p class="lp-lead mt-6 max-w-lg">Pilih menu Kopiah dari ponsel, bayar dengan QRIS, lalu lihat status pesananmu tanpa antre di kasir. Foto bersama teman ada di Kopiah Moments.</p>
-      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+      <p class="lp-lead mt-6 max-w-lg" data-reveal>Pilih menu Kopiah dari ponsel, bayar dengan QRIS, lalu lihat status pesananmu tanpa antre di kasir. Foto bersama teman ada di Kopiah Moments.</p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" data-reveal>
         <a class="btn btn-coffee" href="{{ route('menu.index') }}">Lihat menu <x-icon name="arrow-right" /></a>
         <a class="lp-link" href="{{ route('moments.index') }}">Buka Kopiah Moments</a>
       </div>
     </div>
-    <div class="lg:col-span-6 lg:pl-8">
-      <figure class="lp-receipt" aria-label="Contoh tampilan struk pesanan">
+    <div class="lg:col-span-6 lg:pl-8" data-parallax="10">
+      <figure class="lp-receipt" data-reveal aria-label="Contoh tampilan struk pesanan">
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="lp-meta">Nomor antrean</p>
@@ -46,7 +46,7 @@
     <div><h2 class="lp-h2">Menu untuk dicoba</h2><p class="text-sm text-coffee/70 mt-2">Empat menu untuk memulai. Daftar lengkap ada di halaman menu.</p></div>
     <a class="lp-link" href="{{ route('menu.index') }}">Lihat semua menu <x-icon name="arrow-right" /></a>
   </div>
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" data-stagger>
     @foreach ($featured as $menu)<x-menu-card :menu="$menu" />@endforeach
   </div>
 </section>
@@ -57,7 +57,7 @@
     <div><h2 class="lp-h2">Moments terbaru</h2><p class="text-sm text-coffee/70 mt-2">Foto dari pengunjung Kopiah.</p></div>
     <a class="lp-link" href="{{ route('moments.index') }}"><x-icon name="camera" /> Buka kamera</a>
   </div>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-stagger>
     @foreach ($moments as $moment)
       <a href="{{ route('moments.index') }}#moment-{{ $moment->id }}" class="lk-card block">
         <div class="lk-photo-wrap"><img class="lk-photo" src="{{ $moment->url }}" alt="Momen Kopiah" loading="lazy">@if ($moment->caption)<span class="lk-caption">{{ $moment->caption }}</span>@endif</div>
@@ -70,7 +70,7 @@
 @if ($promos->isNotEmpty())
 <section class="lp-band py-16"><div class="max-w-7xl mx-auto px-6">
   <h2 class="lp-h2 mb-8">Promo aktif</h2>
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4" data-stagger>
     @foreach ($promos as $promo)
       <div class="lp-promo">
         <div class="min-w-0">
@@ -91,7 +91,7 @@
     <p class="text-coffee/70 leading-7 mt-5 max-w-lg">Kopiah adalah kafe untuk bekerja, bertemu teman, atau duduk sendirian. Pesan dari meja lewat ponsel, atau bayar langsung di kasir.</p>
     <a class="lp-link mt-6 inline-flex" href="{{ route('about') }}">Baca selengkapnya <x-icon name="arrow-right" /></a>
   </div>
-  <dl class="lg:col-span-6 lp-facts">
+  <dl class="lg:col-span-6 lp-facts" data-parallax="6">
     <div><dt><x-icon name="clock" /> Jam buka</dt><dd>{{ setting('opening_hours', 'Setiap hari, 08.00 - 22.00 WIB') }}</dd></div>
     <div><dt><x-icon name="map-pin" /> Alamat</dt><dd>{{ setting('address', 'Jl. Contoh No. 10, Depok, Jawa Barat') }}</dd></div>
     <div><dt><x-icon name="qr-code" /> Pembayaran</dt><dd>QRIS dari ponsel, atau bayar di kasir</dd></div>
@@ -100,7 +100,7 @@
 
 <section class="lp-band py-16"><div class="max-w-7xl mx-auto px-6">
   <div class="flex items-end justify-between gap-4 mb-8"><h2 class="lp-h2">Ulasan pelanggan</h2></div>
-  <div class="grid md:grid-cols-3 gap-4">
+  <div class="grid md:grid-cols-3 gap-4" data-stagger>
     @forelse ($reviews as $review)
       <article class="card p-6">
         <div class="rating mb-3 flex gap-0.5" role="img" aria-label="Nilai {{ $review->rating }} dari 5">@for ($i = 1; $i <= 5; $i++)<x-icon name="star" :filled="$i <= $review->rating" class="w-4 h-4 {{ $i <= $review->rating ? '' : 'opacity-30' }}" />@endfor</div>

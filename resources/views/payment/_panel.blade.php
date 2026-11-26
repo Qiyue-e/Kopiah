@@ -7,7 +7,7 @@
   <div data-pay-state="loading" class="mt-6" role="status" aria-label="Membuat QRIS">
     <div class="skeleton mx-auto w-full max-w-[280px] aspect-square rounded-2xl"></div>
     <div class="skeleton h-4 w-40 mx-auto mt-5"></div>
-    <p class="text-xs text-coffee/55 mt-3">membuat QRIS...</p>
+    <span class="sr-only">Membuat QRIS</span>
   </div>
 
   <div data-pay-state="ready" class="mt-6" hidden>

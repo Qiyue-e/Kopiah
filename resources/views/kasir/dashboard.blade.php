@@ -14,7 +14,7 @@
   <div class="flex flex-wrap items-start justify-between gap-3">
     <div class="min-w-0">
       <h2 class="font-serif text-2xl">Jam Ramai</h2>
-      <p class="text-xs text-coffee/60 mt-1" id="peakSummary" aria-live="polite">memuat data...</p>
+      <p class="text-xs text-coffee/60 mt-1" id="peakSummary" aria-live="polite"><x-skeleton class="h-3 w-56 !block" /></p>
     </div>
     <div class="flex gap-1 rounded-xl border border-coffee/15 p-1" role="group" aria-label="Rentang waktu">
       <button type="button" class="peak-range" data-range="hari-ini" aria-pressed="true">Hari ini</button>

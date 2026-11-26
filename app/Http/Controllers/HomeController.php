@@ -16,7 +16,7 @@ class HomeController extends Controller
             'featured' => Menu::with('category')->available()->orderByDesc('is_best_seller')->latest()->limit(4)->get(),
             'promos' => Promo::available()->limit(3)->get(),
             'reviews' => Review::approved()->latest()->limit(3)->get(),
-            'moments' => Moment::approved()->latest()->limit(4)->get(),
+            'moments' => Moment::approved()->latest()->limit(12)->get()->filter->hasFile()->take(4)->values(), // lewati foto yang filenya hilang
         ]);
     }
 

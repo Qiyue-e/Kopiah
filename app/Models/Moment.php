@@ -47,6 +47,18 @@ class Moment extends Model
         });
     }
 
+    /** Apakah file fotonya benar-benar ada di disk (data lama bisa menunjuk file yang hilang). */
+    public function hasFile(): bool
+    {
+        $path = str_replace('\\', '/', (string) $this->file_path);
+
+        try {
+            return $path !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
     public function scopeApproved(Builder $query): Builder
     {
         return $query->where('status', 'approved');

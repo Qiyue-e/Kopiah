@@ -10,13 +10,17 @@ use Illuminate\View\View;
 
 class PasswordController extends Controller
 {
-    public function edit(): View
+    public function edit(Request $request): View
     {
+        $this->ownerOnly($request);
+
         return view('auth.password');
     }
 
     public function update(Request $request): RedirectResponse
     {
+        $this->ownerOnly($request); // lapis kedua selain middleware role:owner di route
+
         $data = $request->validate([
             'current_password' => ['required', 'current_password'],
             'password' => ['required', 'string', 'min:12', 'confirmed', 'different:current_password'],
@@ -28,5 +32,10 @@ class PasswordController extends Controller
         ActivityLog::record('change_password', 'Pengguna mengganti password sendiri');
 
         return redirect()->route('staff.password.edit')->with('success', 'password berhasil diganti.');
+    }
+
+    private function ownerOnly(Request $request): void
+    {
+        abort_unless($request->user()?->isOwner(), 403, 'Kasir tidak dapat mengganti password sendiri. Hubungi owner untuk reset password.');
     }
 }

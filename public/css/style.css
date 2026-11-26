@@ -58,3 +58,31 @@
 .pay-qr img,.pay-qr canvas{width:100%!important;height:auto!important;display:block}
 .pay-qr img + canvas,.pay-qr canvas:not(:only-child){display:none!important}
 .queue-number{font-variant-numeric:tabular-nums;line-height:1}
+
+/* ===== Notifikasi pesanan baru di panel kasir ===== */
+#kn-toasts{position:fixed;right:16px;bottom:16px;z-index:60;display:flex;flex-direction:column;gap:12px;width:min(380px,calc(100vw - 32px));pointer-events:none}
+.kn-toast{position:relative;pointer-events:auto;display:flex;gap:16px;padding:16px;background:#fff;border:1px solid rgba(75,46,30,.14);border-radius:16px;box-shadow:0 8px 24px rgba(75,46,30,.16);opacity:0;transform:translateY(12px);transition:opacity .2s ease,transform .2s ease}
+.kn-toast.kn-in{opacity:1;transform:none}
+.kn-toast.kn-out{opacity:0;transform:translateY(8px)}
+.kn-toast-num{display:flex;flex-direction:column;align-items:center;min-width:56px}
+.kn-toast-close{position:absolute;top:4px;right:8px;width:28px;height:28px;font-size:20px;line-height:1;color:rgba(75,46,30,.55);border-radius:8px}
+.kn-toast-close:hover{background:rgba(75,46,30,.08)}
+.kn-dot{width:8px;height:8px;border-radius:9999px;background:#8A9A5B;flex:none}
+.kn-dot[data-state="down"]{background:#D98E32}
+.kn-dot[data-state="auth"]{background:#B3261E}
+.kn-badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:8px;border-radius:9999px;background:#B3261E;color:#fff;font-size:11px;font-weight:600;line-height:20px;text-align:center;font-variant-numeric:tabular-nums}
+.kn-badge[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.kn-toast{transition:none}}
+
+/* ===== Grafik Jam Ramai ===== */
+.peak-range{padding:8px 12px;border-radius:8px;font-size:13px;line-height:16px;color:#4B2E1E;transition:background-color .15s ease,color .15s ease}
+.peak-range:hover{background:rgba(75,46,30,.08)}
+.peak-range[aria-pressed="true"]{background:#4B2E1E;color:#fff}
+.peak-range:focus-visible{outline:2px solid #4B2E1E;outline-offset:2px}
+.peak-swatch{display:inline-block;width:12px;height:12px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){.peak-range{transition:none}}
+
+/* Utility `grid`/`flex` Tailwind mengalahkan atribut hidden bawaan; panel Jam Ramai memakai hidden untuk ganti state. */
+#peakSection [hidden] { display: none !important; }
+#peakSection .peak-legend { display: flex; flex-wrap: wrap; align-items: center; column-gap: 16px; row-gap: 4px; }
+#peakSection .peak-legend > span { display: flex; align-items: center; gap: 8px; }

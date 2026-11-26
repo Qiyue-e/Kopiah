@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
 {
-    /** Akun demo — segera ganti password setelah login pertama. */
+    /** Akun demo — owner segera ganti password; password kasir direset owner lewat menu Akun Kasir. */
     public function run(): void
     {
         User::firstOrCreate(['username' => 'owner'], [

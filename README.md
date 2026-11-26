@@ -20,7 +20,7 @@ Atau cukup `composer run setup` setelah `.env` dan database siap.
 
 > Kamera Moments hanya jalan di **HTTPS atau `localhost`**. Tes dari HP: pakai tunnel HTTPS (mis. `ngrok http 8000`) dan set `APP_URL` yang sama.
 
-**Akun demo** (ganti segera lewat menu *Ganti password*)
+**Akun demo** (owner mengganti passwordnya lewat menu *Ganti password*; kasir tidak punya menu ini, passwordnya direset owner lewat *Akun Kasir*)
 
 | Role  | Username | Password       | Login                          |
 |-------|----------|----------------|--------------------------------|

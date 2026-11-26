@@ -84,7 +84,8 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/admin/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
 
-Route::middleware(['auth', 'role:owner,kasir'])->group(function () {
+// Ganti password mandiri hanya untuk owner. Kasir tidak boleh (403); password kasir direset owner lewat menu Akun Kasir.
+Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/admin/password', [PasswordController::class, 'edit'])->name('staff.password.edit');
     Route::put('/admin/password', [PasswordController::class, 'update'])->name('staff.password.update');
 });
@@ -129,6 +130,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:owner'])->grou
 */
 Route::prefix('kasir')->name('kasir.')->middleware(['auth', 'role:kasir,owner'])->group(function () {
     Route::get('dashboard', Kasir\DashboardController::class)->name('dashboard');
+    Route::get('jam-ramai', Kasir\PeakHoursController::class)->name('peak-hours');
 
     Route::get('pesanan', [Kasir\OrderController::class, 'index'])->name('orders.index');
     Route::get('pesanan/daftar', [Kasir\OrderController::class, 'list'])->name('orders.list');

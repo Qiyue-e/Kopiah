@@ -34,5 +34,6 @@ list.addEventListener('submit', async e => {
   busy = false; btn.disabled = false; await refresh();
 });
 refresh(); setInterval(refresh, 5000);
+window.addEventListener('kasir:poll', e => { if (e.detail.fresh.length) refresh(); }); // pesanan baru langsung tampil
 </script>
 @endpush

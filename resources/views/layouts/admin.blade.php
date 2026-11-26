@@ -31,12 +31,14 @@
         <a class="admin-sidebar-link" href="{{ route('admin.settings.edit') }}">⚙ &nbsp; Pengaturan</a>
       @else
         <a class="admin-sidebar-link" href="{{ route('kasir.dashboard') }}">▦ &nbsp; Dashboard</a>
-        <a class="admin-sidebar-link" href="{{ route('kasir.orders.index') }}">☷ &nbsp; Pesanan</a>
+        <a class="admin-sidebar-link" href="{{ route('kasir.orders.index') }}">☷ &nbsp; Pesanan <span id="kn-badge" class="kn-badge" hidden aria-live="polite">0</span></a>
         <a class="admin-sidebar-link" href="{{ route('kasir.pos.create') }}">＋ &nbsp; POS / Pesanan manual</a>
         <a class="admin-sidebar-link" href="{{ route('kasir.cash.index') }}">▣ &nbsp; Kas harian</a>
       @endif
       <div class="border-t border-coffee/10 my-3"></div>
-      <a class="admin-sidebar-link" href="{{ route('staff.password.edit') }}">♧ &nbsp; Ganti password</a>
+      @if ($role === 'owner')
+        <a class="admin-sidebar-link" href="{{ route('staff.password.edit') }}">♧ &nbsp; Ganti password</a>
+      @endif
       <a class="admin-sidebar-link" href="{{ route('home') }}" target="_blank">↗ &nbsp; Lihat website</a>
     </nav>
   </aside>
@@ -44,10 +46,24 @@
     <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-coffee/10 px-4 sm:px-7 py-4 flex items-center justify-between gap-3">
       <div><p class="text-xs text-coffee/50">Kopiah / {{ $role }}</p><h1 class="font-semibold text-lg">@yield('title', 'Panel')</h1></div>
       <div class="flex items-center gap-3">
+        @if ($role === 'kasir')
+          {{-- Notifikasi pesanan baru: status koneksi + suara. Logika di public/js/kasir-notify.js --}}
+          <div id="kn-root" class="flex items-center gap-2" data-poll-url="{{ route('kasir.orders.poll') }}" data-orders-url="{{ route('kasir.orders.index') }}">
+            <span class="flex items-center gap-2 text-[11px] text-coffee/60" role="status">
+              <span id="kn-dot" class="kn-dot" data-state="ok" aria-hidden="true"></span>
+              <span id="kn-status-text" class="sr-only lg:not-sr-only">Terhubung</span>
+            </span>
+            <button id="kn-sound" type="button" class="btn btn-coffee !px-3 !py-2 !text-xs" aria-pressed="false">
+              <span data-full class="hidden sm:inline">Aktifkan suara</span><span data-short class="sm:hidden">Suara</span>
+            </button>
+          </div>
+        @endif
         <div class="text-right hidden sm:block">
           <p class="text-sm font-semibold">{{ $user->nama }}</p>
           <p class="text-[11px] uppercase text-coffee/50">{{ $role }}</p>
-          <a class="text-[11px] underline text-coffee/60" href="{{ route('staff.password.edit') }}">Ganti password</a>
+          @if ($role === 'owner')
+            <a class="text-[11px] underline text-coffee/60" href="{{ route('staff.password.edit') }}">Ganti password</a>
+          @endif
         </div>
         <form action="{{ route('logout') }}" method="post">@csrf<button class="btn btn-light !px-3 !py-2 !text-xs" type="submit">Keluar</button></form>
       </div>
@@ -60,6 +76,10 @@
   </div>
 </div>
 <script>document.addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('[data-admin-toggle]'),n=document.getElementById('adminNav');if(b&&n)b.addEventListener('click',()=>n.classList.toggle('hidden'))});</script>
+@if ($role === 'kasir')
+  <div id="kn-toasts" aria-live="polite"></div>
+  <script src="{{ asset('js/kasir-notify.js') }}" defer></script>
+@endif
 @stack('scripts')
 </body>
 </html>

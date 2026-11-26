@@ -164,7 +164,6 @@
 .motion-pending main h1,.motion-pending main h2,.motion-pending [data-reveal],.motion-pending [data-stagger]>*{opacity:0}
 .sw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
 .sw-i{display:inline-block;will-change:transform}
-[data-parallax]{will-change:transform}
 
 /* Tombol: tekan, loading (shimmer, bukan spinner) */
 .btn{position:relative;overflow:hidden}

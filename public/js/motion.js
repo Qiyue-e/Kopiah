@@ -1,7 +1,7 @@
-/* Animasi scroll halaman pelanggan: Lenis (scroll halus) + GSAP ScrollTrigger (reveal per kata, parallax) + Motion (kartu, cover).
+/* Animasi scroll halaman pelanggan: Lenis (scroll halus) + GSAP ScrollTrigger (reveal per kata) + Motion (kartu, cover).
    - Diinisialisasi sekali di layout pelanggan; dibersihkan saat halaman ditinggalkan. Tidak dimuat di panel kasir/owner.
    - Hanya transform dan opacity. prefers-reduced-motion, atau CDN gagal dimuat: konten tampil apa adanya.
-   - API ulang pakai: Kopiah.splitReveal(selector), atau atribut data-stagger / data-reveal / data-parallax di markup. */
+   - API ulang pakai: Kopiah.splitReveal(selector), atau atribut data-stagger / data-reveal di markup. */
 (function () {
   'use strict';
   const html = document.documentElement;
@@ -66,18 +66,6 @@
     });
   }
 
-  function parallax() {
-    gsap.matchMedia().add('(min-width: 1024px)', () => { // dinonaktifkan di layar kecil
-      document.querySelectorAll('[data-parallax]').forEach(el => {
-        const v = Math.min(15, parseFloat(el.dataset.parallax) || 8);
-        gsap.fromTo(el, { yPercent: v }, {
-          yPercent: -v, ease: 'none',
-          scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: true },
-        });
-      });
-    });
-  }
-
   function init() {
     if (active) return;
     if (reduce.matches || !ready()) return done();
@@ -90,7 +78,7 @@
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    ctx = gsap.context(() => { splitReveal('main h1, main h2'); parallax(); });
+    ctx = gsap.context(() => { splitReveal('main h1, main h2'); });
     revealGroups();
     done();
     requestAnimationFrame(() => ScrollTrigger.refresh());

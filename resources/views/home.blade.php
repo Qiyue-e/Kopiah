@@ -15,7 +15,7 @@
         <a class="lp-link" href="{{ route('moments.index') }}">Buka Kopiah Moments</a>
       </div>
     </div>
-    <div class="lg:col-span-6 lg:pl-8" data-parallax="10">
+    <div class="lg:col-span-6 lg:pl-8">
       <figure class="lp-receipt" data-reveal aria-label="Contoh tampilan struk pesanan">
         <div class="flex items-start justify-between gap-4">
           <div>
@@ -91,7 +91,7 @@
     <p class="text-coffee/70 leading-7 mt-5 max-w-lg">Kopiah adalah kafe untuk bekerja, bertemu teman, atau duduk sendirian. Pesan dari meja lewat ponsel, atau bayar langsung di kasir.</p>
     <a class="lp-link mt-6 inline-flex" href="{{ route('about') }}">Baca selengkapnya <x-icon name="arrow-right" /></a>
   </div>
-  <dl class="lg:col-span-6 lp-facts" data-parallax="6">
+  <dl class="lg:col-span-6 lp-facts">
     <div><dt><x-icon name="clock" /> Jam buka</dt><dd>{{ setting('opening_hours', 'Setiap hari, 08.00 - 22.00 WIB') }}</dd></div>
     <div><dt><x-icon name="map-pin" /> Alamat</dt><dd>{{ setting('address', 'Jl. Contoh No. 10, Depok, Jawa Barat') }}</dd></div>
     <div><dt><x-icon name="qr-code" /> Pembayaran</dt><dd>QRIS dari ponsel, atau bayar di kasir</dd></div>
